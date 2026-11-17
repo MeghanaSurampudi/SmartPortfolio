@@ -1,8 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Login - Student Performance Portal</title><link rel="stylesheet" href="styles.css" /></head>
-<body><div class="container login-container"><h2>Login</h2><form>
-<label for="role">Select Role:</label><select id="role" required><option value="" disabled selected>Select your role</option><option value="student">Student</option><option value="faculty">Faculty / Mentor</option><option value="careerCell">Career Cell</option></select>
-<label for="email">Email:</label><input type="email" id="email" placeholder="your.email@example.com" required />
-<label for="password">Password:</label><input type="password" id="password" required />
-<button type="submit" class="btn-primary">Login</button></form></div></body></html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Portfolio | Account</title><link rel="stylesheet" href="styles.css"></head>
+<body><main class="container login-container"><h1>Smart Portfolio</h1><p>Student Performance & Feedback Portal</p>
+<section><h2>Login</h2><form id="loginForm">
+<label for="role">Role</label><select id="role" required><option value="">Choose role</option><option value="student">Student</option><option value="faculty">Faculty / Mentor</option><option value="careerCell">Career Cell</option></select>
+<label for="email">Email</label><input type="email" id="email" required>
+<label for="password">Password</label><input type="password" id="password" minlength="8" required>
+<button class="btn-primary" type="submit">Login</button></form><p id="loginMessage" role="status"></p></section>
+<hr><section><h2>Create student account</h2><form id="registerForm">
+<label for="regName">Full name</label><input id="regName" required>
+<label for="regEmail">Email</label><input id="regEmail" type="email" required>
+<label for="regPassword">Password (minimum 8 characters)</label><input id="regPassword" type="password" minlength="8" required>
+<button class="btn-primary" type="submit">Register as Student</button></form><p id="registerMessage" role="status"></p></section></main>
+<script>
+const API='http://localhost:5000/api';
+document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();const out=document.getElementById('loginMessage');out.textContent='Signing in...';try{const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value,password:password.value,role:role.value})});const d=await r.json();if(!r.ok)throw Error(d.message);localStorage.setItem('spToken',d.token);localStorage.setItem('spUser',JSON.stringify(d.user));location.href=d.user.role==='student'?'student-dashboard.html':'faculty.html';}catch(err){out.textContent=err.message;}});
+document.getElementById('registerForm').addEventListener('submit',async e=>{e.preventDefault();const out=document.getElementById('registerMessage');try{const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:regName.value,email:regEmail.value,password:regPassword.value})});const d=await r.json();if(!r.ok)throw Error(d.message);out.textContent='Account created. You can now log in.';registerForm.reset();}catch(err){out.textContent=err.message;}});
+</script></body></html>
