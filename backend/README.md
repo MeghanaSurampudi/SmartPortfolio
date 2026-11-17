@@ -20,4 +20,4 @@ Node.js 18+ and MySQL 8+.
 Protected routes require `Authorization: Bearer <token>`. Uploads use multipart field `certificates`; PDF/JPG/PNG up to 5 MB each.
 
 ## Production hardening
-This is a learning implementation. Add administrator-controlled role provisioning, rate limiting, schema validation, content-based file validation, authenticated file downloads, HTTPS, private S3 storage, audit logs, backups, and automated tests before production deployment.
+This is a learning implementation. Faculty and career-cell accounts must be provisioned manually by a trusted administrator in MySQL; public registration creates student accounts only. Add rate limiting, schema validation, content-based file validation, authenticated certificate download, HTTPS, private S3 storage, audit logs, backups, and automated tests before production deployment.
