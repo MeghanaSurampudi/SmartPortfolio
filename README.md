@@ -39,7 +39,7 @@ Requirements: Node.js 18+ and MySQL 8+.
 See backend/README.md for API routes.
 
 ## Integration status
-The backend APIs and SQL schema are implemented as a learning extension, but the static HTML pages are not yet fully connected to those APIs. The student dashboard's original marks/feedback demo uses browser localStorage; login and certificate screens still need frontend API integration. Run and test the API independently first.
+The login, student dashboard, and faculty/career-cell screens now call the backend APIs. Marks and feedback are stored in MySQL; certificate uploads are stored on the backend server's local disk for this demo. The application has been organized for local execution, but it has not yet been run against your own MySQL installation or deployed to AWS. Complete the setup and test every flow locally before presenting it as fully verified.
 
 ## Limitations and security
 - Public registration accepts a role value for demonstration. In production, only a trusted administrator should provision faculty and career-cell accounts.
