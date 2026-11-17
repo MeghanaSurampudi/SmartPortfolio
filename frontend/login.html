@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Portfolio | Account</title><link rel="stylesheet" href="styles.css"></head>
-<body><main class="container login-container"><h1>Smart Portfolio</h1><p>Student Performance & Feedback Portal</p>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Portfolio | Account</title><link rel="stylesheet" href="styles.css"></head>
+<body><main class="container login-container"><h1>Smart Portfolio</h1><p>Student Performance &amp; Feedback Portal</p>
 <section><h2>Login</h2><form id="loginForm">
 <label for="role">Role</label><select id="role" required><option value="">Choose role</option><option value="student">Student</option><option value="faculty">Faculty / Mentor</option><option value="careerCell">Career Cell</option></select>
 <label for="email">Email</label><input type="email" id="email" required>
-<label for="password">Password</label><input type="password" id="password" minlength="8" required>
+<label for="password">Password</label><input type="password" id="password" required>
 <button class="btn-primary" type="submit">Login</button></form><p id="loginMessage" role="status"></p></section>
 <hr><section><h2>Create student account</h2><form id="registerForm">
 <label for="regName">Full name</label><input id="regName" required>
@@ -13,6 +14,7 @@
 <button class="btn-primary" type="submit">Register as Student</button></form><p id="registerMessage" role="status"></p></section></main>
 <script>
 const API='http://localhost:5000/api';
-document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();const out=document.getElementById('loginMessage');out.textContent='Signing in...';try{const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value,password:password.value,role:role.value})});const d=await r.json();if(!r.ok)throw Error(d.message);localStorage.setItem('spToken',d.token);localStorage.setItem('spUser',JSON.stringify(d.user));location.href=d.user.role==='student'?'student-dashboard.html':'faculty.html';}catch(err){out.textContent=err.message;}});
-document.getElementById('registerForm').addEventListener('submit',async e=>{e.preventDefault();const out=document.getElementById('registerMessage');try{const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:regName.value,email:regEmail.value,password:regPassword.value})});const d=await r.json();if(!r.ok)throw Error(d.message);out.textContent='Account created. You can now log in.';registerForm.reset();}catch(err){out.textContent=err.message;}});
+const byId=id=>document.getElementById(id);
+byId('loginForm').addEventListener('submit',async e=>{e.preventDefault();const out=byId('loginMessage');out.textContent='Signing in...';try{const response=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:byId('email').value,password:byId('password').value,role:byId('role').value})});const data=await response.json();if(!response.ok)throw Error(data.message||'Login failed');localStorage.setItem('spToken',data.token);localStorage.setItem('spUser',JSON.stringify(data.user));location.href=data.user.role==='student'?'student-dashboard.html':'faculty.html';}catch(err){out.textContent=err.message;}});
+byId('registerForm').addEventListener('submit',async e=>{e.preventDefault();const out=byId('registerMessage');try{const response=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:byId('regName').value,email:byId('regEmail').value,password:byId('regPassword').value})});const data=await response.json();if(!response.ok)throw Error(data.message||'Registration failed');out.textContent='Student account created. You can now log in.';e.target.reset();}catch(err){out.textContent=err.message;}});
 </script></body></html>
