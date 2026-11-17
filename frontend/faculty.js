@@ -1,0 +1,12 @@
+const API='http://localhost:5000/api', token=localStorage.getItem('spToken'), user=JSON.parse(localStorage.getItem('spUser')||'null');
+async function call(path,options={}){const r=await fetch(API+path,{...options,headers:{Authorization:'Bearer '+token,...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.message||'Request failed');return d;}
+document.addEventListener('DOMContentLoaded',async()=>{
+ if(!token||!user){location.href='login.html';return;}
+ if(!['faculty','careerCell'].includes(user.role)){location.href='student-dashboard.html';return;}
+ document.getElementById('facultyWelcome').textContent='Welcome, '+user.name;
+ document.getElementById('logoutLink').addEventListener('click',()=>{localStorage.removeItem('spToken');localStorage.removeItem('spUser');});
+ const select=document.getElementById('studentSelect'), detail=document.getElementById('studentPerformance');
+ try{const students=await call('/students');students.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name+' ('+s.email+')';select.appendChild(o);});}catch(e){detail.textContent=e.message;}
+ select.addEventListener('change',async()=>{if(!select.value)return;try{const [marks,feedback]=await Promise.all([call('/marks?studentId='+select.value),call('/feedback?studentId='+select.value)]);detail.replaceChildren();const h=document.createElement('h3');h.textContent='Semester marks';detail.appendChild(h);const ul=document.createElement('ul');marks.forEach(m=>{const li=document.createElement('li');li.textContent='Semester '+m.semester+': '+m.marks+'%';ul.appendChild(li);});detail.appendChild(ul);const fh=document.createElement('h3');fh.textContent='Previous feedback';detail.appendChild(fh);feedback.forEach(x=>{const p=document.createElement('p');p.textContent=x.comment;detail.appendChild(p);});if(!marks.length)detail.append('No marks submitted yet.');}catch(e){detail.textContent=e.message;}});
+ document.getElementById('feedbackForm').addEventListener('submit',async e=>{e.preventDefault();const out=document.getElementById('feedbackMessage');if(!select.value){out.textContent='Select a student first.';return;}try{const d=await call('/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId:Number(select.value),comment:document.getElementById('comment').value})});out.textContent=d.message;e.target.reset();select.dispatchEvent(new Event('change'));}catch(err){out.textContent=err.message;}});
+});
