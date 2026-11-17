@@ -22,6 +22,7 @@ app.get('/', (req, res) => res.send('Smart Portfolio API is running'));
 
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/marks', require('./routes/marksRoutes'));
+app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/feedback', require('./routes/feedbackRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
 
