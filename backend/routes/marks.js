@@ -7,5 +7,5 @@ router.post('/',authenticate,allowRoles('student'),async(req,res,next)=>{try{
  await db.execute('INSERT INTO marks(student_id,semester,subject,marks) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE marks=VALUES(marks)',[req.user.id,s,subject.trim(),m]);
  res.status(201).json({message:'Marks saved.'});
 }catch(e){next(e);}});
-router.get('/student/:studentId',authenticate,allowRoles('faculty','careerCell'),async(req,res,next)=>{try{const[rows]=await db.execute('SELECT semester,subject,marks FROM marks WHERE student_id=? ORDER BY semester,subject',[req.params.studentId]);res.json(rows);}catch(e){next(e);}});
+router.get('/students',authenticate,allowRoles('faculty','careerCell'),async(req,res,next)=>{try{const[rows]=await db.execute('SELECT id,name,email FROM users WHERE role=? ORDER BY name',['student']);res.json(rows);}catch(e){next(e);}});\nrouter.get('/student/:studentId',authenticate,allowRoles('faculty','careerCell'),async(req,res,next)=>{try{const[rows]=await db.execute('SELECT semester,subject,marks FROM marks WHERE student_id=? ORDER BY semester,subject',[req.params.studentId]);res.json(rows);}catch(e){next(e);}});
 module.exports=router;
