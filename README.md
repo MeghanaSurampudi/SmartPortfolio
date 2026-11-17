@@ -1,87 +1,56 @@
 # Smart Portfolio – Student Performance & Feedback
 
-A student portfolio project developed during the **APSSDC Summer Internship Program (May–July 2025)**. The supplied source archive contains HTML/CSS/JavaScript screens and a small Express/MySQL backend starter.
+A student portfolio project developed during the APSSDC Summer Internship Program (May–July 2025). This repository contains the supplied frontend prototype plus an expanded learning backend for login, marks, faculty feedback, and certificate metadata.
 
-## What is in this repository
+## Included
+- Student, faculty, and career-cell account roles.
+- JWT login and password hashing in the backend.
+- Student semester marks stored in MySQL.
+- Faculty feedback stored against student accounts.
+- Certificate upload endpoint with file size and extension limits.
+- Student dashboard UI and Chart.js performance graph prototype.
+- Architecture notes based on the internship report.
 
-- Student dashboard UI for entering semester marks, viewing a Chart.js performance chart, and displaying feedback.
-- Faculty dashboard UI with a feedback form layout.
-- Career-cell dashboard UI layout.
-- Login screen with student, faculty/mentor, and career-cell role choices.
-- Express server with a MySQL connection module and a root health-check endpoint.
+## Technology
+HTML5, CSS3, JavaScript, Node.js, Express, MySQL, mysql2, JWT, bcryptjs, Multer and Chart.js. The internship report also describes AWS EC2, RDS, S3, IAM, VPC, CloudWatch and Nginx; AWS deployment is not configured or verified in this repository.
 
-## Technology visible in the supplied source
-
-- Frontend: HTML5, CSS3, JavaScript
-- Backend: Node.js, Express.js
-- Database driver: mysql2 (MySQL)
-- Browser demo storage: localStorage
-- Charting: Chart.js (loaded by the student dashboard)
-
-The internship report also describes an intended AWS deployment using EC2, RDS, S3, IAM, VPC, CloudWatch and Nginx. Those cloud resources/configurations are not included in this source archive, so this repository does not claim a verified or currently deployed AWS environment.
-
-## Project structure
-
+## Structure
 ```text
 SmartPortfolio/
-├── frontend/
-│   ├── index.html
-│   ├── about.html
-│   ├── career.html
-│   ├── faculty.html
-│   ├── login.html
-│   ├── student-dashboard.html
-│   ├── styles.css
-│   └── script.js
+├── frontend/                 # HTML, CSS and browser-side JavaScript
 ├── backend/
-│   ├── config/db.js
-│   ├── controllers/feedbackcontroller.js
-│   ├── routes/feedbackRoutes.js
+│   ├── config/               # MySQL connection pool
+│   ├── database/schema.sql   # Database tables
+│   ├── middleware/           # JWT authentication and role checks
+│   ├── routes/               # Auth, marks, feedback, certificates APIs
+│   ├── uploads/              # Local demo uploads (ignored by Git)
 │   ├── server.js
 │   ├── package.json
 │   └── .env.example
-└── docs/
-    └── ARCHITECTURE.md
+└── docs/ARCHITECTURE.md
 ```
 
-## Run locally
+## Run backend
+Requirements: Node.js 18+ and MySQL 8+.
+1. From backend/, run: mysql -u root -p < database/schema.sql
+2. Copy .env.example to .env and set DB credentials plus a long random JWT_SECRET.
+3. Run npm install and npm start in backend/.
+4. Test GET http://localhost:5000/api/health.
+See backend/README.md for API routes.
 
-### Backend
+## Integration status
+The backend APIs and SQL schema are implemented as a learning extension, but the static HTML pages are not yet fully connected to those APIs. The student dashboard's original marks/feedback demo uses browser localStorage; login and certificate screens still need frontend API integration. Run and test the API independently first.
 
-1. Install Node.js and MySQL.
-2. Open a terminal in `backend/` and run `npm install`.
-3. Copy `.env.example` to `.env` and enter local MySQL connection values. Never commit `.env`.
-4. Create the database named in `DB_NAME`.
-5. Run `npm start`.
-6. Visit `http://localhost:5000/` to check the backend health endpoint.
-
-### Frontend
-
-Open `frontend/student-dashboard.html` in a browser. Chart.js is loaded from a CDN, so an internet connection is needed for the chart.
-
-## Current limitations
-
-This is an early project snapshot, not a complete production application:
-
-- The supplied backend only exposes `GET /`; login, marks, certificate, and feedback API endpoints are not implemented.
-- The feedback controller and route files in the archive were empty.
-- Marks and feedback shown in the browser demo use localStorage, not MySQL.
-- Certificate submission is a demo alert; files are not uploaded to S3 or another server.
-- The login form has no authentication handler.
-- Some original navigation links refer to pages not present in the supplied archive.
-- No SQL schema/migrations, AWS deployment files, screenshots, or automated tests were supplied.
-
-The UI and starter backend are preserved as project evidence. Do not present incomplete demo interactions as secure or production-ready functionality.
-
-## Security
-
-Keep real database credentials and secrets in a local `.env` file only. Never commit AWS keys, database passwords, JWT secrets, or private student data. Configure least-privilege IAM and network access before any cloud deployment.
+## Limitations and security
+- Public registration accepts a role value for demonstration. In production, only a trusted administrator should provision faculty and career-cell accounts.
+- Certificate files are stored locally for this demo, not in Amazon S3, and are not exposed through a protected download endpoint.
+- Before production use, add rate limiting, stronger validation, file content checks, authenticated downloads, HTTPS, private S3 storage, audit logs, backups, and automated tests.
+- Never commit .env, AWS credentials, database passwords, private student data, or uploaded certificates.
 
 ## Internship context
+Program: APSSDC Summer Internship Program on AWS
+Period: May 2025 – July 2025
+Project: Smart Portfolio on Student Performance and Feedback
+Report contributors: S. Meghana, R. Lavanya, V. Mounika, G. Madhulatha Reddy, and J. Yashwanth Krishna
 
-**Program:** APSSDC Summer Internship Program on AWS  
-**Period:** May 2025 – July 2025  
-**Project:** Smart Portfolio on Student Performance and Feedback  
-**Report contributors:** S. Meghana, R. Lavanya, V. Mounika, G. Madhulatha Reddy, and J. Yashwanth Krishna
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the report-described architecture and intended cloud components.
+See docs/ARCHITECTURE.md for the architecture described in the internship report.
