@@ -1,112 +1,87 @@
-# Smart Portfolio – Student Performance & Feedback Management
+# Smart Portfolio – Student Performance & Feedback
 
-A cloud-hosted student portfolio application developed during the **APSSDC Summer Internship Program (May–July 2025)**. The platform centralizes academic records, achievements, certificates, and mentor feedback so students can track their progress and present their work in one place.
+A student portfolio project developed during the **APSSDC Summer Internship Program (May–July 2025)**. The supplied source archive contains HTML/CSS/JavaScript screens and a small Express/MySQL backend starter.
 
-> **Project provenance:** This repository is being organized from the project report prepared by the internship team. The report lists S. Meghana and four teammates as contributors. The original application source code has not yet been added to this repository; implementation details below reflect the report and should be verified against the source before describing the repository as a runnable application.
+## What is in this repository
 
-## Problem
+- Student dashboard UI for entering semester marks, viewing a Chart.js performance chart, and displaying feedback.
+- Faculty dashboard UI with a feedback form layout.
+- Career-cell dashboard UI layout.
+- Login screen with student, faculty/mentor, and career-cell role choices.
+- Express server with a MySQL connection module and a root health-check endpoint.
 
-Student marks, certificates, skills, and feedback are often spread across spreadsheets, paper records, and separate files. Smart Portfolio brings these records together in a structured digital portfolio.
+## Technology visible in the supplied source
 
-## Main capabilities described in the project report
+- Frontend: HTML5, CSS3, JavaScript
+- Backend: Node.js, Express.js
+- Database driver: mysql2 (MySQL)
+- Browser demo storage: localStorage
+- Charting: Chart.js (loaded by the student dashboard)
 
-- **Student portfolio:** maintain profile details, skills, projects, and achievements.
-- **Academic performance:** enter and view semester-wise marks and subject records.
-- **Certificate management:** upload PDF and image certificates to cloud storage.
-- **Mentor feedback:** allow faculty/mentors to review student records and provide feedback.
-- **Role-based access:** student and admin/mentor access, with JWT-based authentication described in the report.
-- **Responsive interface:** access portfolio sections from desktop, tablet, and mobile browsers.
+The internship report also describes an intended AWS deployment using EC2, RDS, S3, IAM, VPC, CloudWatch and Nginx. Those cloud resources/configurations are not included in this source archive, so this repository does not claim a verified or currently deployed AWS environment.
 
-## Technology stack
-
-| Layer | Technologies / services |
-|---|---|
-| Frontend | HTML5, CSS3, JavaScript |
-| Backend | Node.js, Express.js, REST APIs |
-| Authentication | JWT; student and admin roles |
-| File uploads | Multer, AWS SDK |
-| Database | MySQL on Amazon RDS, Sequelize ORM |
-| File storage | Amazon S3 |
-| Compute / hosting | Ubuntu on Amazon EC2 |
-| Web server / reverse proxy | Nginx |
-| Access management | AWS IAM roles |
-| Networking | Amazon VPC, security groups |
-| Monitoring | Amazon CloudWatch |
-| Process management | PM2 (as described in deployment section) |
-
-## Architecture
-
-The report describes a three-tier architecture:
-
-1. **Presentation layer** – HTML, CSS, and JavaScript screens for students and mentors.
-2. **Application layer** – Node.js/Express APIs for authentication, portfolio CRUD operations, marks, feedback, and certificate uploads.
-3. **Data and storage layer** – Amazon RDS (MySQL) for structured records and Amazon S3 for certificate files.
-
-The application is described as running on an Ubuntu EC2 instance, with Nginx forwarding web traffic to the Express application.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the component flow and data model described in the report.
-
-## Data model described in the report
-
-The report identifies these logical tables:
-
-- `users` – user identity and role
-- `portfolios` – portfolio information linked to a user
-- `marks` – semester, subject, and marks
-- `certificates` – certificate metadata and S3 location
-- `feedback` – mentor comments and timestamps
-
-These are a summary of the report, not a database migration or verified schema.
-
-## Repository structure
+## Project structure
 
 ```text
 SmartPortfolio/
-├── README.md
-├── .gitignore
+├── frontend/
+│   ├── index.html
+│   ├── about.html
+│   ├── career.html
+│   ├── faculty.html
+│   ├── login.html
+│   ├── student-dashboard.html
+│   ├── styles.css
+│   └── script.js
+├── backend/
+│   ├── config/db.js
+│   ├── controllers/feedbackcontroller.js
+│   ├── routes/feedbackRoutes.js
+│   ├── server.js
+│   ├── package.json
+│   └── .env.example
 └── docs/
     └── ARCHITECTURE.md
 ```
 
-The repository currently contains project documentation. The original application source, dependency manifest, database migrations, deployment configuration, and screenshots still need to be added and reviewed before setup instructions or a live demo can be provided.
+## Run locally
 
-## Local setup
+### Backend
 
-A verified local setup guide cannot yet be provided because the application source code and its dependency files are not included in the report. Once the original source is added, this section can document the exact install, configuration, database, and run commands.
+1. Install Node.js and MySQL.
+2. Open a terminal in `backend/` and run `npm install`.
+3. Copy `.env.example` to `.env` and enter local MySQL connection values. Never commit `.env`.
+4. Create the database named in `DB_NAME`.
+5. Run `npm start`.
+6. Visit `http://localhost:5000/` to check the backend health endpoint.
 
-Do not commit AWS access keys, database passwords, JWT secrets, private certificates, or production environment files. Use environment variables and least-privilege IAM permissions.
+### Frontend
 
-## Security considerations
+Open `frontend/student-dashboard.html` in a browser. Chart.js is loaded from a CDN, so an internet connection is needed for the chart.
 
-The project report describes the following security measures:
+## Current limitations
 
-- IAM roles for application access to AWS resources.
-- Restricted S3 access and signed URLs for certificate viewing.
-- Database access limited to the application environment within the VPC.
-- Input validation and sanitization in the API layer.
-- JWT-based authentication and role-based authorization.
+This is an early project snapshot, not a complete production application:
 
-These describe the intended implementation in the report; verify the actual source and AWS configuration before treating them as audited controls.
+- The supplied backend only exposes `GET /`; login, marks, certificate, and feedback API endpoints are not implemented.
+- The feedback controller and route files in the archive were empty.
+- Marks and feedback shown in the browser demo use localStorage, not MySQL.
+- Certificate submission is a demo alert; files are not uploaded to S3 or another server.
+- The login form has no authentication handler.
+- Some original navigation links refer to pages not present in the supplied archive.
+- No SQL schema/migrations, AWS deployment files, screenshots, or automated tests were supplied.
 
-## Future enhancements
+The UI and starter backend are preserved as project evidence. Do not present incomplete demo interactions as secure or production-ready functionality.
 
-The report suggests possible extensions such as:
+## Security
 
-- Resume generation from portfolio data
-- Academic performance analytics and dashboards
-- Email notifications
-- LinkedIn integration
+Keep real database credentials and secrets in a local `.env` file only. Never commit AWS keys, database passwords, JWT secrets, or private student data. Configure least-privilege IAM and network access before any cloud deployment.
 
-These are proposed enhancements, not features claimed as implemented.
-
-## Internship project
+## Internship context
 
 **Program:** APSSDC Summer Internship Program on AWS  
-**Course period:** May 2025 – July 2025  
+**Period:** May 2025 – July 2025  
 **Project:** Smart Portfolio on Student Performance and Feedback  
-**Report contributors:** S. Meghana, R. Lavanya, V. Mounika, G. Madhulatha Reddy, and J. Yashwanth Krishna  
-**Guidance acknowledged in the report:** Mrs. Sumana Bethala and Mr. Anil Kumar, APSSDC
+**Report contributors:** S. Meghana, R. Lavanya, V. Mounika, G. Madhulatha Reddy, and J. Yashwanth Krishna
 
----
-
-If you are reviewing or extending this project, start with [the architecture notes](docs/ARCHITECTURE.md).
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the report-described architecture and intended cloud components.
